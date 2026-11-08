@@ -89,6 +89,38 @@ h1 small{display:block;font-size:15px;color:#c9a227;letter-spacing:6px}
  button.b{min-width:0;padding:2px 5px;font-size:10px;border-radius:8px}button.b .ic{font-size:19px}
  #fire{font-size:15px;min-width:74px;padding:6px}
 }
+#rotOv{display:none;position:fixed;inset:0;z-index:30;background:radial-gradient(circle,#2a2a3a,#06060a);flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px}
+.rotIc{font-size:90px;animation:rot 2s ease-in-out infinite}
+@keyframes rot{0%,20%{transform:rotate(0)}50%,80%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
+.rotT{font-size:34px;font-weight:bold;color:#ffd23f;text-shadow:0 3px 0 #000}.rotS{font-size:15px;color:#ccc}
+@media (orientation:portrait) and (max-width:700px){body.ingame #rotOv{display:flex}}
+/* celular deitado: armas à esquerda, proteções e FOGO à direita, arena no meio */
+@media (orientation:landscape) and (max-height:520px),(orientation:landscape) and (pointer:coarse){
+ #app{display:grid;grid-template-columns:1fr auto minmax(0,calc((100dvh - 46px - env(safe-area-inset-top) - env(safe-area-inset-bottom))*1.6)) auto 1fr;grid-template-rows:auto 1fr auto auto}
+ #hud{grid-column:1/6;grid-row:1;padding:2px 6px}
+ .pbox canvas{width:30px;height:30px}.hpbar{height:11px;margin-top:1px}.hptext{font-size:9px;line-height:10px}
+ #scoreTxt{display:none}#center{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center}
+ #stage{grid-column:3;grid-row:2/5}
+ #controls{display:contents}
+ #controls>.grp{border-radius:0;background:#101018;padding:3px}
+ #controls>.grp:nth-child(1){grid-column:2;grid-row:2/5;justify-content:center}
+ #wgrp{display:grid!important;grid-template-columns:1fr;gap:3px!important}
+ #controls>.grp:nth-child(2){grid-column:4;grid-row:2;align-items:center}
+ #pgrp{display:grid!important;grid-template-columns:1fr 1fr;gap:3px!important}
+ #dgrp{grid-column:4;grid-row:3}
+ #controls>.grp:nth-child(4){grid-column:4;grid-row:4;display:grid;grid-template-columns:1fr 1fr;gap:3px}
+ #fire{grid-column:1/3}
+ button.b{min-width:46px;padding:1px 4px}button.b .ic{font-size:18px}button.b .nm{display:none}
+ /* visual de Joy-Con: azul à esquerda, vermelho à direita */
+ #controls>.grp:nth-child(1){background:linear-gradient(90deg,#0796c4,#0ab9e6);border-radius:26px 6px 6px 26px;padding:8px 6px 8px 10px;box-shadow:inset 0 0 0 2px #ffffff30}
+ #controls>.grp:nth-child(2),#dgrp,#controls>.grp:nth-child(4){background:linear-gradient(270deg,#d42d1c,#ff4b35)!important;padding:6px 10px 6px 6px}
+ #controls>.grp:nth-child(2){border-radius:6px 26px 0 0;padding-top:10px;box-shadow:inset 0 2px 0 #ffffff30}
+ #controls>.grp:nth-child(4){border-radius:0 0 26px 6px;padding-bottom:10px}
+ #controls button.b{background:#1b1b22;border-color:#0006;box-shadow:0 2px 0 #0008;border-radius:12px}
+ #controls button.b.sel{background:#4a3a10;border-color:#ffd23f}
+ #controls #fire{background:linear-gradient(#e02424,#901010);border-color:#fff8;border-radius:16px}
+ #controls #modeAim.on,#controls #modeWalk.on{border-color:#5cf;background:#103a4a}
+}
 @media (max-width:520px){button.b .nm{display:none}button.b{min-width:44px}}
 #overBox{margin:auto;text-align:center;padding:20px}
 #overBox canvas{width:220px;height:220px}
@@ -151,6 +183,7 @@ h1 small{display:block;font-size:15px;color:#c9a227;letter-spacing:6px}
   </div>
 </div>
 
+<div id="rotOv"><div class="rotIc">📱</div><div class="rotT">Vire o celular<br>de lado!</div><div class="rotS">O jogo fica pausado até você virar 🔄</div></div>
 <div id="help" class="ov hidden"><div class="mbox" id="helpBox"></div></div>
 <div id="over" class="ov hidden">
   <div id="overBox">
@@ -391,7 +424,7 @@ function makeBG(){
 }
 function rectCircDist(o,x,y){const cx=clamp(x,o.x,o.x+o.w),cy=clamp(y,o.y,o.y+o.h);return Math.hypot(x-cx,y-cy)}
 function genArena(){
-  const obs=[];const P=W>=H?[{x:150,y:rnd(220,H-220)},{x:W-150,y:rnd(220,H-220)}]:[{x:rnd(200,W-200),y:H-150},{x:rnd(200,W-200),y:150}];const M=2*R+15;
+  const obs=[];const P=[{x:150,y:rnd(220,H-220)},{x:W-150,y:rnd(220,H-220)}];const M=2*R+15;
   const okR=(x,y,w,h)=>{if(x<30||y<30||x+w>W-30||y+h>H-30)return false;for(const p of P)if(rectCircDist({x,y,w,h},p.x,p.y)<150)return false;for(const o of obs){if(o.shape==='rect'){if(x<o.x+o.w+M&&x+w+M>o.x&&y<o.y+o.h+M&&y+h+M>o.y)return false}else if(rectCircDist({x,y,w,h},o.x,o.y)<o.r+M)return false}return true};
   const okC=(x,y,r)=>{if(x-r<30||y-r<30||x+r>W-30||y+r>H-30)return false;for(const p of P)if(Math.hypot(x-p.x,y-p.y)<r+150)return false;for(const o of obs){if(o.shape==='rect'){if(rectCircDist(o,x,y)<r+M)return false}else if(Math.hypot(x-o.x,y-o.y)<r+o.r+M)return false}return true};
   const add=(n,gen)=>{let k=0,t=0;while(k<n&&t<500){t++;const o=gen();if(o.shape==='rect'?okR(o.x,o.y,o.w,o.h):okC(o.x,o.y,o.r)){obs.push(o);k++}}};
@@ -458,13 +491,13 @@ const cur=()=>G.players[G.turn],other=()=>G.players[1-G.turn];
 const humanTurn=()=>G.screen==='game'&&G.phase==='aim'&&cur()&&!cur().cpu;
 
 function startGame(){
-  const st=document.getElementById('stage');if(st.clientHeight>st.clientWidth*1.05){W=1000;H=1500;R=36}else{W=1600;H=1000;R=30}
+  const st=document.getElementById('stage');W=1600;H=1000;R=30;
   makeBG();const {obs,P}=genArena();G.obs=obs;G.proj=[];G.exps=[];G.parts=[];G.fts=[];
   G.players=[0,1].map(i=>{const ch=CH[G.sel[i]];let name=ch.name;if(i===1&&G.sel[0]===G.sel[1])name+=' 2';
     return{idx:i,ch:ch.id,name,x:P[i].x,y:P[i].y,hp:ch.hp,maxhp:ch.hp,spd:ch.spd,aim:i===0?0:Math.PI,
       ammo:Object.fromEntries(WKEYS.map(k=>[k,WEAPONS[k].ammo])),prot:Object.fromEntries(PKEYS.map(k=>[k,PROTS[k].uses])),
       active:null,usedProt:false,walkLeft:0,weapon:'pistola',cpu:i===1&&G.mode==='cpu',flash:0,walkPh:0,dead:0}});
-  G.screen='game';document.getElementById('menu').classList.add('hidden');document.getElementById('over').classList.add('hidden');
+  document.body.classList.add('ingame');G.screen='game';document.getElementById('menu').classList.add('hidden');document.getElementById('over').classList.add('hidden');
   resize();
   for(let i=0;i<2;i++){portrait(document.querySelector(`#pb${i} canvas`),G.players[i].ch,i?-2.7:-.4);document.querySelector(`#pb${i} .pname`).textContent=(G.players[i].cpu?'🤖 ':'')+G.players[i].name}
   G.turn=1;nextTurn();
@@ -656,10 +689,10 @@ function updateCPU(dt){
 }
 
 // ====================== LOOP ======================
-let last=performance.now();
+let last=performance.now();const PORTRAIT=matchMedia('(orientation:portrait) and (max-width:700px)');
 function frame(now){
   const dt=Math.min(.033,(now-last)/1000);last=now;
-  if(G.screen==='game'){if(!G.paused)update(dt);render()}
+  if(G.screen==='game'){if(!G.paused&&!PORTRAIT.matches)update(dt);render()}
   requestAnimationFrame(frame);
 }
 function update(dt){
@@ -702,7 +735,7 @@ function render(){
       else if(e.hit===pl){selfHit=true;C(c,e.x,e.y,12,null,'#ffa500',3)}});
     if(r.dmg[1-pl.idx]>0)foeHit=true;if(r.dmg[pl.idx]>0)selfHit=true;
     if(!pl.cpu){const t=foeHit&&!selfHit?'🎯 VAI ACERTAR!':selfHit&&!foeHit?'⚠️ CUIDADO: volta em você!':foeHit?'🎯 acerta os dois!':'';
-      if(t){c.font=`bold ${Math.max(26,14/VS)}px Trebuchet MS,Arial`;c.textAlign='center';c.lineWidth=5;c.strokeStyle='#000';c.strokeText(t,pl.x,pl.y-R-56);c.fillStyle=selfHit&&!foeHit?'#ffa500':'#7f7';c.fillText(t,pl.x,pl.y-R-56)}}
+      if(t){c.font=`bold ${Math.max(26,14/VS)}px Trebuchet MS,Arial`;c.textAlign='center';c.lineWidth=5;c.strokeStyle='#000';const tw=c.measureText(t).width/2+8,tx=clamp(pl.x,tw,W-tw);c.strokeText(t,tx,pl.y-R-56);c.fillStyle=selfHit&&!foeHit?'#ffa500':'#7f7';c.fillText(t,tx,pl.y-R-56)}}
     c.restore();
   }
   // alvo de caminhada / passos
@@ -830,7 +863,7 @@ document.getElementById('rndBtn').onclick=()=>{A();S.click();G.sel=[CHARS[Math.f
 document.getElementById('play').onclick=()=>{A();if(!G.sel[0]){G.slot=0;refreshMenu();return}if(!G.sel[1]){const o=CHARS.filter(c=>c.id!==G.sel[0]);G.sel[1]=o[Math.floor(Math.random()*o.length)].id}startGame()};
 document.getElementById('againBtn').onclick=()=>{A();startGame()};
 document.getElementById('changeBtn').onclick=()=>{showMenu()};
-function showMenu(){G.screen='menu';G.phase='over';document.getElementById('over').classList.add('hidden');document.getElementById('menu').classList.remove('hidden');G.slot=0;refreshMenu()}
+function showMenu(){document.body.classList.remove('ingame');G.screen='menu';G.phase='over';document.getElementById('over').classList.add('hidden');document.getElementById('menu').classList.remove('hidden');G.slot=0;refreshMenu()}
 function buildHelp(){
   const sp=v=>v>=1.25?'muito rápido':v>=1.05?'rápido':v>=.9?'normal':'devagar';
   let h=`<h1 style="font-size:28px">📖 Manual do Agente</h1>
