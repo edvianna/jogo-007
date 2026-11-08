@@ -6,8 +6,8 @@
 <title>007 — Missão Ricochete</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:#0b0b10;color:#fff;font-family:'Trebuchet MS',Arial,sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
-#app{display:flex;flex-direction:column;height:100%}
+html,body{height:100%;height:100dvh;background:#0b0b10;color:#fff;font-family:'Trebuchet MS',Arial,sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
+#app{display:flex;flex-direction:column;height:100%;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 #hud{display:flex;align-items:center;justify-content:space-between;padding:5px 10px;gap:10px;background:linear-gradient(#1c1c28,#0f0f16);border-bottom:2px solid #c9a227}
 .pbox{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
 .pbox.right{flex-direction:row-reverse;text-align:right}
@@ -28,7 +28,7 @@ html,body{height:100%;background:#0b0b10;color:#fff;font-family:'Trebuchet MS',A
 #msg{font-size:12px;color:#7fd;min-height:14px}
 .tiny{background:#2a2a3a;border:1px solid #555;color:#fff;border-radius:6px;padding:2px 7px;font-size:14px;cursor:pointer;margin:2px}
 #stage{flex:1;position:relative;display:flex;align-items:center;justify-content:center;min-height:0;background:#0b0b10}
-#cv{display:block;border-radius:8px;box-shadow:0 0 0 4px #4a3416,0 0 0 7px #2a1d0b,0 8px 24px #000;cursor:crosshair}
+#cv{display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:8px;box-shadow:0 0 0 4px #4a3416,0 0 0 7px #2a1d0b,0 8px 24px #000;cursor:crosshair}
 #controls{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;padding:6px;background:linear-gradient(#0f0f16,#1c1c28);border-top:2px solid #c9a227}
 .grp{display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:center;padding:3px 6px;border-radius:10px;background:#16161f}
 .grp .gl{font-size:10px;color:#c9a227;font-weight:bold;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:1px}
@@ -79,6 +79,17 @@ h1 small{display:block;font-size:15px;color:#c9a227;letter-spacing:6px}
 .hc{background:#1c1c28;border:2px solid #3a3a4a;border-radius:12px;padding:8px 10px;display:flex;gap:10px;align-items:flex-start}
 .hc .hi{font-size:34px;line-height:1}.hc canvas{width:64px;height:64px;flex:none}
 .hc b{color:#fff;font-size:15px}.hc p{font-size:13px;color:#ccd;margin:3px 0}.hc .hs{font-size:12px;color:#ffd23f}
+@media (max-width:700px),(max-height:500px){
+ #hud{padding:3px 6px;gap:4px}
+ .pbox{gap:4px}.pbox canvas{width:36px;height:36px;border-width:2px}
+ .pname{font-size:12px}.pstat{display:none}.hpbar{height:13px}.hptext{font-size:10px;line-height:12px}
+ #center{min-width:0}#turnTxt{font-size:12px}#scoreTxt,#msg{font-size:10px}.tiny{font-size:11px;padding:1px 5px;margin:1px}
+ #controls{gap:3px;padding:3px}.grp{padding:2px 3px;gap:3px}.grp .gl{display:none}
+ #wgrp,#pgrp{gap:3px!important}
+ button.b{min-width:0;padding:2px 5px;font-size:10px;border-radius:8px}button.b .ic{font-size:19px}
+ #fire{font-size:15px;min-width:74px;padding:6px}
+}
+@media (max-width:520px){button.b .nm{display:none}button.b{min-width:44px}}
 #overBox{margin:auto;text-align:center;padding:20px}
 #overBox canvas{width:220px;height:220px}
 #overTitle{font-size:40px;font-weight:bold;color:#ffd23f;text-shadow:0 3px 0 #000;margin:8px}
@@ -154,7 +165,7 @@ h1 small{display:block;font-size:15px;color:#c9a227;letter-spacing:6px}
 <script>
 'use strict';
 // ====================== CONSTANTES ======================
-const W=1600,H=1000,R=30,WALK=340,WSPEED=260,SHOT_TIME=30,STEP=1/60;
+let W=1600,H=1000,R=30;const WALK=340,WSPEED=260,SHOT_TIME=30,STEP=1/60;
 const TAU=Math.PI*2;
 const clamp=(v,a,b)=>v<a?a:v>b?b:v;
 const rnd=(a,b)=>a+Math.random()*(b-a);
@@ -357,8 +368,8 @@ function portrait(cv,id,aim=-0.4){const c=cv.getContext('2d');c.clearRect(0,0,cv
 // ====================== CANVAS / ESCALA ======================
 const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
 let VS=1,DPR=1;
-function resize(){const st=document.getElementById('stage');const aw=st.clientWidth-14,ah=st.clientHeight-14;VS=Math.max(.1,Math.min(aw/W,ah/H));DPR=window.devicePixelRatio||1;cv.style.width=Math.floor(W*VS)+'px';cv.style.height=Math.floor(H*VS)+'px';cv.width=Math.round(W*VS*DPR);cv.height=Math.round(H*VS*DPR)}
-window.addEventListener('resize',resize);
+function resize(){const st=document.getElementById('stage');const aw=st.clientWidth-10,ah=st.clientHeight-10;if(aw<20||ah<20)return;VS=Math.max(.1,Math.min(aw/W,ah/H));DPR=window.devicePixelRatio||1;cv.style.width=Math.floor(W*VS)+'px';cv.style.height=Math.floor(H*VS)+'px';cv.width=Math.round(W*VS*DPR);cv.height=Math.round(H*VS*DPR)}
+window.addEventListener('resize',resize);if(window.ResizeObserver)new ResizeObserver(()=>resize()).observe(document.getElementById('stage'));
 function toWorld(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H}}
 
 // ====================== ARENA ======================
@@ -380,7 +391,7 @@ function makeBG(){
 }
 function rectCircDist(o,x,y){const cx=clamp(x,o.x,o.x+o.w),cy=clamp(y,o.y,o.y+o.h);return Math.hypot(x-cx,y-cy)}
 function genArena(){
-  const obs=[];const P=[{x:150,y:rnd(220,H-220)},{x:W-150,y:rnd(220,H-220)}];const M=75;
+  const obs=[];const P=W>=H?[{x:150,y:rnd(220,H-220)},{x:W-150,y:rnd(220,H-220)}]:[{x:rnd(200,W-200),y:H-150},{x:rnd(200,W-200),y:150}];const M=2*R+15;
   const okR=(x,y,w,h)=>{if(x<30||y<30||x+w>W-30||y+h>H-30)return false;for(const p of P)if(rectCircDist({x,y,w,h},p.x,p.y)<150)return false;for(const o of obs){if(o.shape==='rect'){if(x<o.x+o.w+M&&x+w+M>o.x&&y<o.y+o.h+M&&y+h+M>o.y)return false}else if(rectCircDist({x,y,w,h},o.x,o.y)<o.r+M)return false}return true};
   const okC=(x,y,r)=>{if(x-r<30||y-r<30||x+r>W-30||y+r>H-30)return false;for(const p of P)if(Math.hypot(x-p.x,y-p.y)<r+150)return false;for(const o of obs){if(o.shape==='rect'){if(rectCircDist(o,x,y)<r+M)return false}else if(Math.hypot(x-o.x,y-o.y)<r+o.r+M)return false}return true};
   const add=(n,gen)=>{let k=0,t=0;while(k<n&&t<500){t++;const o=gen();if(o.shape==='rect'?okR(o.x,o.y,o.w,o.h):okC(o.x,o.y,o.r)){obs.push(o);k++}}};
@@ -447,6 +458,7 @@ const cur=()=>G.players[G.turn],other=()=>G.players[1-G.turn];
 const humanTurn=()=>G.screen==='game'&&G.phase==='aim'&&cur()&&!cur().cpu;
 
 function startGame(){
+  const st=document.getElementById('stage');if(st.clientHeight>st.clientWidth*1.05){W=1000;H=1500;R=36}else{W=1600;H=1000;R=30}
   makeBG();const {obs,P}=genArena();G.obs=obs;G.proj=[];G.exps=[];G.parts=[];G.fts=[];
   G.players=[0,1].map(i=>{const ch=CH[G.sel[i]];let name=ch.name;if(i===1&&G.sel[0]===G.sel[1])name+=' 2';
     return{idx:i,ch:ch.id,name,x:P[i].x,y:P[i].y,hp:ch.hp,maxhp:ch.hp,spd:ch.spd,aim:i===0?0:Math.PI,
@@ -690,7 +702,7 @@ function render(){
       else if(e.hit===pl){selfHit=true;C(c,e.x,e.y,12,null,'#ffa500',3)}});
     if(r.dmg[1-pl.idx]>0)foeHit=true;if(r.dmg[pl.idx]>0)selfHit=true;
     if(!pl.cpu){const t=foeHit&&!selfHit?'🎯 VAI ACERTAR!':selfHit&&!foeHit?'⚠️ CUIDADO: volta em você!':foeHit?'🎯 acerta os dois!':'';
-      if(t){c.font='bold 26px Trebuchet MS,Arial';c.textAlign='center';c.lineWidth=5;c.strokeStyle='#000';c.strokeText(t,pl.x,pl.y-R-56);c.fillStyle=selfHit&&!foeHit?'#ffa500':'#7f7';c.fillText(t,pl.x,pl.y-R-56)}}
+      if(t){c.font=`bold ${Math.max(26,14/VS)}px Trebuchet MS,Arial`;c.textAlign='center';c.lineWidth=5;c.strokeStyle='#000';c.strokeText(t,pl.x,pl.y-R-56);c.fillStyle=selfHit&&!foeHit?'#ffa500':'#7f7';c.fillText(t,pl.x,pl.y-R-56)}}
     c.restore();
   }
   // alvo de caminhada / passos
@@ -705,7 +717,7 @@ function render(){
     drawCharacter(c,p.ch,p.x,p.y+bob,R,p.aim,{flash:p.flash,dead:p.dead});
     if(p.active==='bolha'){const g=c.createRadialGradient(p.x-12,p.y-14,4,p.x,p.y,R+16);g.addColorStop(0,'rgba(255,255,255,.5)');g.addColorStop(.7,'rgba(200,150,255,.12)');g.addColorStop(1,'rgba(120,220,255,.45)');C(c,p.x,p.y,R+16,g,'rgba(220,180,255,.8)',2)}
     if(p.dead){for(let i=0;i<3;i++){const t=G.time*3+i*2.1;c.fillStyle='#ffd23f';c.font='18px Arial';c.textAlign='center';c.fillText('★',p.x+Math.cos(t)*22,p.y-30+Math.sin(t)*7)}}
-    c.font='bold 14px Trebuchet MS,Arial';c.textAlign='center';c.lineWidth=3;c.strokeStyle='#000';c.strokeText(p.name,p.x,p.y+R+24);c.fillStyle=p.idx?'#ffb0b0':'#b0e0ff';c.fillText(p.name,p.x,p.y+R+24);
+    const nf=Math.max(14,11/VS);c.font=`bold ${nf}px Trebuchet MS,Arial`;c.textAlign='center';c.lineWidth=3;c.strokeStyle='#000';c.strokeText(p.name,p.x,p.y+R+10+nf);c.fillStyle=p.idx?'#ffb0b0':'#b0e0ff';c.fillText(p.name,p.x,p.y+R+10+nf);
     // mini barra de vida
     rr(c,p.x-28,p.y-R-22,56,7,3,'#300');rr(c,p.x-28,p.y-R-22,56*p.hp/p.maxhp,7,3,p.hp/p.maxhp>.5?'#4d4':p.hp/p.maxhp>.25?'#dd3':'#e33');
   }
@@ -732,7 +744,7 @@ function render(){
     else if(p.star){c.fillStyle=p.col;c.font='14px Arial';c.textAlign='center';c.fillText('★',p.x,p.y)}
     else if(p.sq){c.fillStyle=p.col;c.fillRect(p.x-p.size/2,p.y-p.size/2,p.size,p.size)}
     else C(c,p.x,p.y,p.gas?p.size*(1.6-k):p.size*k,p.col);c.restore()}
-  for(const f of G.fts){c.save();c.globalAlpha=Math.min(1,f.t*2);c.font='bold 30px Trebuchet MS,Arial';c.textAlign='center';c.lineWidth=5;c.strokeStyle='#000';c.strokeText(f.text,f.x,f.y);c.fillStyle=f.col;c.fillText(f.text,f.x,f.y);c.restore()}
+  for(const f of G.fts){c.save();c.globalAlpha=Math.min(1,f.t*2);c.font=`bold ${Math.max(30,18/VS)}px Trebuchet MS,Arial`;c.textAlign='center';c.lineWidth=5;c.strokeStyle='#000';c.strokeText(f.text,f.x,f.y);c.fillStyle=f.col;c.fillText(f.text,f.x,f.y);c.restore()}
   c.restore();
   if(G.banner){const k=G.banner.t;c.save();c.globalAlpha=Math.min(1,k*2);const s=1+Math.max(0,k-1.3)*2;c.translate(W/2,H/2);c.scale(s,s);
     rr(c,-380,-55,760,110,24,'rgba(0,0,0,.65)','#c9a227',4);c.font='bold 52px Trebuchet MS,Arial';c.textAlign='center';c.textBaseline='middle';c.fillStyle=G.turn?'#ff8080':'#80c8ff';c.fillText(G.banner.text,0,2);c.restore()}
@@ -753,8 +765,8 @@ function gameOver(){
 
 // ====================== INTERFACE ======================
 const wgrp=document.getElementById('wgrp'),pgrp=document.getElementById('pgrp');
-WKEYS.forEach((k,i)=>{const w=WEAPONS[k],b=document.createElement('button');b.className='b';b.id='w_'+k;b.title=w.tip+` (tecla ${i+1})`;b.innerHTML=`<span class="ic">${w.icon}</span>${w.name}<span class="am"></span>`;b.onclick=()=>{A();const pl=cur();if(!humanTurn()||pl.ammo[k]<=0)return;pl.weapon=k;S.click();setMsg(w.name+': '+w.tip);updateUI()};wgrp.appendChild(b)});
-PKEYS.forEach(k=>{const p=PROTS[k],b=document.createElement('button');b.className='b';b.id='p_'+k;b.title=p.tip;b.innerHTML=`<span class="ic">${p.icon}</span>${p.name}<span class="am"></span>`;b.onclick=()=>{A();if(!humanTurn())return;useProt(k)};pgrp.appendChild(b)});
+WKEYS.forEach((k,i)=>{const w=WEAPONS[k],b=document.createElement('button');b.className='b';b.id='w_'+k;b.title=w.tip+` (tecla ${i+1})`;b.innerHTML=`<span class="ic">${w.icon}</span><span class="nm">${w.name}</span><span class="am"></span>`;b.onclick=()=>{A();const pl=cur();if(!humanTurn()||pl.ammo[k]<=0)return;pl.weapon=k;S.click();setMsg(w.name+': '+w.tip);updateUI()};wgrp.appendChild(b)});
+PKEYS.forEach(k=>{const p=PROTS[k],b=document.createElement('button');b.className='b';b.id='p_'+k;b.title=p.tip;b.innerHTML=`<span class="ic">${p.icon}</span><span class="nm">${p.name}</span><span class="am"></span>`;b.onclick=()=>{A();if(!humanTurn())return;useProt(k)};pgrp.appendChild(b)});
 function setCtl(m){G.ctl=m;document.getElementById('modeAim').classList.toggle('on',m==='aim');document.getElementById('modeWalk').classList.toggle('on',m==='walk')}
 document.getElementById('modeAim').onclick=()=>{A();setCtl('aim')};
 document.getElementById('modeWalk').onclick=()=>{A();setCtl('walk');if(cur()&&cur().walkLeft>0)setMsg('Toque no lugar para onde quer andar');};
