@@ -583,14 +583,14 @@ function updateWalk(dt){
 // ====================== COMPUTADOR ======================
 function angDiff(a,b){let d=b-a;while(d>Math.PI)d-=TAU;while(d<-Math.PI)d+=TAU;return d}
 function cpuEval(me,foe,wk,cands){
-  const N=120;for(let i=0;i<N;i++){const a=i/N*TAU;const r=simulate(me,wk,a);const df=r.dmg[foe.idx],ds=r.dmg[me.idx];if(df>0)cands.push({wk,a,score:df-1.7*ds-CPU_COST[wk],df,ds})}
+  const N=wk==='pistola'||wk==='laser'?240:120;for(let i=0;i<N;i++){const a=i/N*TAU;const r=simulate(me,wk,a);const df=r.dmg[foe.idx],ds=r.dmg[me.idx];if(df>0)cands.push({wk,a,score:df-1.7*ds-CPU_COST[wk],df,ds})}
 }
 function cpuRefine(me,foe,c){
   const ok=a=>{const r=simulate(me,c.wk,a);return r.dmg[foe.idx]>0&&r.dmg[me.idx]<r.dmg[foe.idx]};
   let lo=c.a,hi=c.a;const st=.004;
   for(let k=1;k<=15;k++){if(ok(c.a-k*st))lo=c.a-k*st;else break}
   for(let k=1;k<=15;k++){if(ok(c.a+k*st))hi=c.a+k*st;else break}
-  return(lo+hi)/2;
+  return{mid:(lo+hi)/2,half:(hi-lo)/2+st/2};
 }
 function updateCPU(dt){
   const c=G.cpu,me=cur(),foe=other();if(!c||G.phase!=='aim')return;
@@ -612,9 +612,9 @@ function updateCPU(dt){
     else{
       let i=0;if(G.diff==='facil'&&Math.random()<.45)i=Math.floor(Math.random()*Math.min(cs.length,25));
       else if(G.diff==='medio'&&Math.random()<.25)i=Math.floor(Math.random()*Math.min(cs.length,6));
-      pick={...cs[i]};pick.a=cpuRefine(me,foe,pick);
-      const sig=G.diff==='facil'?.09:G.diff==='medio'?.03:.004;pick.a+=gauss()*sig;
-      if(G.diff==='facil'&&Math.random()<.25)pick.a+=rnd(-.4,.4);
+      pick={...cs[i]};const w=cpuRefine(me,foe,pick);
+      const hitP=G.diff==='facil'?.3:G.diff==='medio'?.55:.85;
+      pick.a=Math.random()<hitP?w.mid+gauss()*w.half*.25:w.mid+(Math.random()<.5?-1:1)*(w.half+rnd(.01,.09));
     }
     me.weapon=pick.wk;c.a0=me.aim;c.a1=pick.a;c.st='aim';c.t=0;updateUI();return}
   if(c.st==='walk'){if(!G.walkTarget||me.walkLeft<=0){c.st='plan';c.queue=WKEYS.filter(k=>me.ammo[k]>0);c.cands=[]}return}
@@ -737,7 +737,7 @@ function updateUI(){
   for(let i=0;i<2;i++){const p=G.players[i],box=document.getElementById('pb'+i);box.classList.toggle('active',i===G.turn&&G.phase!=='over');
     const f=box.querySelector('.hpfill'),fr=p.hp/p.maxhp;f.style.width=(fr*100)+'%';f.className='hpfill'+(fr<=.25?' low':fr<=.5?' mid':'');
     box.querySelector('.hptext').textContent=`${p.hp} / ${p.maxhp}`;
-    box.querySelector('.pstat').textContent=(p.active?PROTS[p.active].icon+' '+PROTS[p.active].name+' ':'')+'Arma: '+WEAPONS[p.weapon].icon+' '+WEAPONS[p.weapon].name;}
+    box.querySelector('.pstat').textContent=(p.active?PROTS[p.active].icon+' '+PROTS[p.active].name+' · ':'')+'Arma: '+WEAPONS[p.weapon].icon+' '+WEAPONS[p.weapon].name;}
   document.getElementById('turnTxt').textContent=G.phase==='over'?'FIM!':'Vez de '+pl.name;
   document.getElementById('scoreTxt').textContent=`Placar ${G.score[0]} x ${G.score[1]}`;
   for(const k of WKEYS){const b=document.getElementById('w_'+k),a=pl.ammo[k];b.disabled=!h||a<=0;b.classList.toggle('sel',pl.weapon===k);b.querySelector('.am').textContent=isFinite(a)?'x'+a:'∞'}
