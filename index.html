@@ -74,6 +74,11 @@ h1 small{display:block;font-size:15px;color:#c9a227;letter-spacing:6px}
 .big.alt{background:linear-gradient(#3a3a4a,#20202a);border-color:#777;box-shadow:0 4px 0 #000;font-size:18px;padding:10px 24px}
 .how{font-size:13px;color:#bbc;max-width:760px;margin:8px auto 20px;line-height:1.5;text-align:left;background:#14141c;padding:10px 14px;border-radius:10px}
 .how b{color:#ffd23f}
+#helpBox h2{color:#ffd23f;margin:14px 0 6px;font-size:22px}
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;text-align:left}
+.hc{background:#1c1c28;border:2px solid #3a3a4a;border-radius:12px;padding:8px 10px;display:flex;gap:10px;align-items:flex-start}
+.hc .hi{font-size:34px;line-height:1}.hc canvas{width:64px;height:64px;flex:none}
+.hc b{color:#fff;font-size:15px}.hc p{font-size:13px;color:#ccd;margin:3px 0}.hc .hs{font-size:12px;color:#ffd23f}
 #overBox{margin:auto;text-align:center;padding:20px}
 #overBox canvas{width:220px;height:220px}
 #overTitle{font-size:40px;font-weight:bold;color:#ffd23f;text-shadow:0 3px 0 #000;margin:8px}
@@ -84,13 +89,16 @@ h1 small{display:block;font-size:15px;color:#c9a227;letter-spacing:6px}
 <div id="app">
   <div id="hud">
     <div class="pbox" id="pb0"><canvas width="100" height="100"></canvas><div class="pinfo"><div class="pname"></div><div class="hpbar"><div class="hpfill"></div><div class="hptext"></div></div><div class="pstat"></div></div></div>
-    <div id="center"><div id="turnTxt"></div><div id="scoreTxt"></div><div id="msg"></div><button class="tiny" id="muteBtn" title="Som">🔊</button><button class="tiny" id="menuBtn" title="Menu">☰ Menu</button></div>
+    <div id="center"><div id="turnTxt"></div><div id="scoreTxt"></div><div id="msg"></div><button class="tiny" id="muteBtn" title="Som">🔊</button><button class="tiny" id="helpBtn2" title="Ajuda">❓ Ajuda</button><button class="tiny" id="menuBtn" title="Menu">☰ Menu</button></div>
     <div class="pbox right" id="pb1"><canvas width="100" height="100"></canvas><div class="pinfo"><div class="pname"></div><div class="hpbar"><div class="hpfill"></div><div class="hptext"></div></div><div class="pstat"></div></div></div>
   </div>
   <div id="stage"><canvas id="cv"></canvas></div>
   <div id="controls">
     <div class="grp"><span class="gl">ARMAS</span><span id="wgrp" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center"></span></div>
     <div class="grp"><span class="gl">PROTEÇÃO</span><span id="pgrp" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center"></span></div>
+    <div class="grp" id="dgrp" style="display:none;background:#10243a"><span class="gl" id="dlbl">DEFESA</span>
+      <button class="b" id="d_escudo" title="Liga o escudo agora, mesmo na vez do inimigo"><span class="ic">🛡️</span>Escudo<span class="am"></span></button>
+      <button class="b" id="d_bolha" title="Liga a bolha agora, mesmo na vez do inimigo"><span class="ic">🔮</span>Bolha<span class="am"></span></button></div>
     <div class="grp">
       <button class="b on" id="modeAim"><span class="ic">🎯</span>Mirar</button>
       <button class="b" id="modeWalk"><span class="ic">🚶</span>Andar</button>
@@ -118,19 +126,21 @@ h1 small{display:block;font-size:15px;color:#c9a227;letter-spacing:6px}
         <button class="opt sel" data-diff="medio">😎 Médio</button>
         <button class="opt" data-diff="dificil">😈 Difícil</button></div>
       <button class="opt" id="rndBtn">🎲 Sortear bonecos</button>
+      <button class="opt" id="helpBtn">📖 O que cada arma faz?</button>
     </div>
     <button id="play" class="big">▶ JOGAR!</button>
     <div class="how">
       <b>Como jogar:</b> cada um joga na sua vez. Na sua vez você pode:<br>
       🚶 <b>Andar</b> um pouquinho (teclas W A S D / setas, ou o botão Andar e toque no lugar).<br>
-      🛡️ Usar <b>uma proteção</b>: Escudo (leva menos dano), Bolha (os tiros quicam em você), Muro (põe uma parede na sua frente) ou Kit Médico (+30 de vida).<br>
+      🛡️ Usar <b>uma proteção</b>: Escudo, Bolha, Muro ou Kit Médico. <b>Escudo e Bolha dá para ligar até na vez do inimigo</b>, enquanto o tiro dele está voando!<br>
       🔫 Escolher a <b>arma</b>, mirar com o mouse/dedo e atirar (clique, barra de espaço ou botão FOGO!).<br>
-      ↩️ Os tiros <b>ricocheteiam</b> nas paredes, árvores e pedras — use isso para acertar quem está escondido! Cuidado: o seu próprio tiro pode voltar em você! As caixas de madeira quebram.<br>
+      ↩️ Os tiros <b>ricocheteiam por 30 segundos</b> nas paredes, árvores e pedras, até acertar alguém. A linha da mira mostra o caminho inteiro: se aparecer <b>🎯 VAI ACERTAR!</b>, pode atirar! Se aparecer <b>⚠️</b>, o tiro volta em você. Durante o tiro, aperte <b>⏩ Acelerar</b> para ir mais rápido. As caixas quebram com explosões.<br>
       ❤️ Quem chegar a <b>zero de vida</b> perde!
     </div>
   </div>
 </div>
 
+<div id="help" class="ov hidden"><div class="mbox" id="helpBox"></div></div>
 <div id="over" class="ov hidden">
   <div id="overBox">
     <canvas width="440" height="440"></canvas>
@@ -144,7 +154,7 @@ h1 small{display:block;font-size:15px;color:#c9a227;letter-spacing:6px}
 <script>
 'use strict';
 // ====================== CONSTANTES ======================
-const W=1600,H=1000,R=30,WALK=170,WSPEED=230;
+const W=1600,H=1000,R=30,WALK=340,WSPEED=260,SHOT_TIME=30,STEP=1/60;
 const TAU=Math.PI*2;
 const clamp=(v,a,b)=>v<a?a:v>b?b:v;
 const rnd=(a,b)=>a+Math.random()*(b-a);
@@ -168,19 +178,25 @@ const CHARS=[
 const CH=Object.fromEntries(CHARS.map(c=>[c.id,c]));
 
 const WEAPONS={
- pistola:{name:'Pistola',icon:'🔫',ammo:Infinity,speed:950,dmg:20,bounces:3,r:4,count:1,life:3,snd:'shot',col:'#ffe14d',tip:'Tiro que quica 3 vezes'},
- escopeta:{name:'Escopeta',icon:'💥',ammo:4,speed:850,dmg:8,bounces:1,r:3.5,count:6,spread:0.34,life:1.3,snd:'shotgun',col:'#ffae3d',tip:'6 balinhas espalhadas, quicam 1 vez'},
- laser:{name:'Laser-Relógio',icon:'⌚',ammo:3,speed:1500,dmg:16,bounces:7,r:3,count:1,life:2.4,snd:'laser',col:'#ff2a2a',laser:true,tip:'Raio laser que quica 7 vezes!'},
- bazuca:{name:'Bazuca',icon:'🚀',ammo:2,speed:560,dmg:0,bounces:0,r:7,count:1,life:4,snd:'rocket',explode:{r:115,dmg:42},tip:'Explode onde bater. Quebra caixas!'},
- granada:{name:'Coco-Granada',icon:'🥥',ammo:3,speed:680,dmg:0,bounces:999,r:8,count:1,life:9,fuse:2.4,friction:true,snd:'throw',explode:{r:125,dmg:36},tip:'Quica em tudo e explode depois de 2 segundos'},
- pum:{name:'Bomba de Pum',icon:'💨',ammo:2,speed:430,dmg:0,bounces:2,r:9,count:1,life:5,snd:'throw',explode:{r:150,dmg:26,gas:true},tip:'Nuvem fedida enorme! Quica 2 vezes'},
+ pistola:{name:'Pistola',icon:'🔫',ammo:Infinity,speed:900,dmg:20,bounces:Infinity,r:4,count:1,life:SHOT_TIME,snd:'shot',col:'#ffe14d',
+   tip:'1 bala que quica sem parar. Munição infinita.',kid:'A arma de sempre. Nunca acaba! Tira 20 de vida.',dmgTxt:'20',ammoTxt:'∞ infinita'},
+ escopeta:{name:'Escopeta',icon:'💥',ammo:4,speed:820,dmg:8,bounces:Infinity,r:3.5,count:6,spread:0.34,life:SHOT_TIME,snd:'shotgun',col:'#ffae3d',
+   tip:'6 balinhas espalhadas que quicam.',kid:'Solta 6 balinhas abertas em leque. Cada uma tira 8. Se todas pegarem: 48!',dmgTxt:'8 cada (até 48)',ammoTxt:'4 tiros'},
+ laser:{name:'Laser-Relógio',icon:'⌚',ammo:3,speed:1400,dmg:28,bounces:Infinity,r:3,count:1,life:SHOT_TIME,snd:'laser',col:'#ff2a2a',laser:true,
+   tip:'Raio laser superrápido e forte.',kid:'O raio do relógio de espião. É o tiro mais rápido e tira 28!',dmgTxt:'28',ammoTxt:'3 tiros'},
+ bazuca:{name:'Bazuca',icon:'🚀',ammo:2,speed:560,dmg:0,bounces:Infinity,r:7,count:1,life:SHOT_TIME,snd:'rocket',explode:{r:115,dmg:42},
+   tip:'Foguete que explode quando encosta em alguém.',kid:'Foguete que quica até encostar em alguém e aí EXPLODE. Tira até 42 e quebra caixas.',dmgTxt:'até 42 (explosão)',ammoTxt:'2 tiros'},
+ granada:{name:'Coco-Granada',icon:'🥥',ammo:3,speed:650,dmg:0,bounces:Infinity,r:8,count:1,life:SHOT_TIME,snd:'throw',explode:{r:125,dmg:36},
+   tip:'Coco explosivo que quica e explode em quem tocar.',kid:'Um coco-bomba! Quica por tudo e explode quando bate em alguém. Tira até 36.',dmgTxt:'até 36 (explosão)',ammoTxt:'3 tiros'},
+ pum:{name:'Bomba de Pum',icon:'💨',ammo:2,speed:430,dmg:0,bounces:Infinity,r:9,count:1,life:SHOT_TIME,snd:'throw',explode:{r:170,dmg:26,gas:true},
+   tip:'Nuvem fedida enorme!',kid:'Bomba fedida e lenta. Quando encosta em alguém faz uma nuvem de pum GIGANTE. Tira até 26, mas pega longe!',dmgTxt:'até 26 (nuvem grande)',ammoTxt:'2 tiros'},
 };
 const WKEYS=Object.keys(WEAPONS);
 const PROTS={
- escudo:{name:'Escudo',icon:'🛡️',uses:2,tip:'Leva só 40% do dano até a sua próxima vez'},
- bolha:{name:'Bolha',icon:'🔮',uses:1,tip:'Os tiros quicam em você até a sua próxima vez'},
- muro:{name:'Muro',icon:'🧱',uses:2,tip:'Coloca uma parede entre você e o adversário'},
- kit:{name:'Kit Médico',icon:'❤️',uses:2,tip:'Ganha +30 de vida'},
+ escudo:{name:'Escudo',icon:'🛡️',uses:3,def:true,tip:'Leva só 40% do dano. Pode usar até na vez do inimigo!',kid:'Uma bolha azul de proteção: você leva só um pouquinho do dano. Dá para ligar até enquanto o inimigo atira!',usesTxt:'3 vezes'},
+ bolha:{name:'Bolha',icon:'🔮',uses:1,def:true,tip:'Os tiros quicam em você. Pode usar na vez do inimigo!',kid:'Bolha mágica: as balas QUICAM em você e voltam! Explosões tiram só metade. Também dá para ligar na vez do inimigo.',usesTxt:'1 vez'},
+ muro:{name:'Muro',icon:'🧱',uses:2,tip:'Coloca uma parede entre você e o adversário',kid:'Coloca uma parede de tijolo na sua frente, virada para o inimigo. Some depois de um tempo.',usesTxt:'2 vezes'},
+ kit:{name:'Kit Médico',icon:'❤️',uses:3,tip:'Ganha +30 de vida',kid:'Cura você: +30 de vida (sem passar do máximo).',usesTxt:'3 vezes'},
 };
 const PKEYS=Object.keys(PROTS);
 const CPU_COST={pistola:0,escopeta:2,laser:3,bazuca:7,granada:5,pum:5};
@@ -425,7 +441,7 @@ function drawObstacle(c,o){
 }
 
 // ====================== ESTADO ======================
-const G={screen:'menu',mode:'cpu',diff:'medio',sel:[null,null],slot:0,score:[0,0],time:0,
+const G={acc:0,fast:false,paused:false,screen:'menu',mode:'cpu',diff:'medio',sel:[null,null],slot:0,score:[0,0],time:0,
   players:[],obs:[],proj:[],exps:[],parts:[],fts:[],turn:0,phase:'aim',ctl:'aim',walkTarget:null,banner:null,shake:0,waitT:0,flyT:0,cpu:null,ptrDown:false,mouse:null,msgT:0};
 const cur=()=>G.players[G.turn],other=()=>G.players[1-G.turn];
 const humanTurn=()=>G.screen==='game'&&G.phase==='aim'&&cur()&&!cur().cpu;
@@ -446,7 +462,7 @@ function nextTurn(){
   if(p.ammo[p.weapon]<=0)p.weapon='pistola';
   for(const o of G.obs)if(o.ttl!==undefined){o.ttl--;if(o.ttl<=0)o.dead=true}
   G.obs=G.obs.filter(o=>!o.dead);
-  G.phase='aim';G.walkTarget=null;G.ctl='aim';
+  G.phase='aim';G.walkTarget=null;G.ctl='aim';G.fast=false;G.lastTl=null;
   G.banner={text:'Vez de '+p.name+'!',t:1.6};
   G.cpu=p.cpu?{st:'think',t:.9}:null;
   updateUI();
@@ -459,7 +475,7 @@ function shotAngles(wk,a){const w=WEAPONS[wk];if(w.count>1){const r=[];for(let i
 function moveProj(p,dt,pls,obs,cb){
   if(p.w.friction){const f=Math.exp(-1.1*dt);p.vx*=f;p.vy*=f;if(Math.hypot(p.vx,p.vy)<12){p.vx=0;p.vy=0}}
   const sp=Math.hypot(p.vx,p.vy);if(!sp)return;
-  const n=Math.max(1,Math.ceil(sp*dt/(p.sim?5:3))),h=dt/n,r=p.r;
+  const n=Math.max(1,Math.ceil(sp*dt/4)),h=dt/n,r=p.r;
   for(let i=0;i<n&&!p.dead;i++){
     const px=p.x,py=p.y;p.x+=p.vx*h;p.y+=p.vy*h;
     let b=false,hitO=null;
@@ -474,29 +490,27 @@ function moveProj(p,dt,pls,obs,cb){
       if(d<R+r){if(pl.active==='bolha'){const nx=dx/(d||1),ny=dy/(d||1),dot=p.vx*nx+p.vy*ny;if(dot<0){p.vx-=2*dot*nx;p.vy-=2*dot*ny}p.x=pl.x+nx*(R+r+1);p.y=pl.y+ny*(R+r+1);cb.bubble(p,pl)}else{cb.hit(p,pl);return}}}
   }
 }
+function stepProj(p,cb){moveProj(p,STEP,G.players,G.obs,cb);if(p.dead)return;p.life-=STEP;if(p.life<=0)cb.end(p,null)}
 function dmgMod(pl,amt,expl){let a=amt;if(pl.active==='escudo')a*=.4;if(pl.active==='bolha'&&expl)a*=.5;return Math.round(a)}
 function explDmg(p,pl){const e=p.w.explode,d=Math.hypot(pl.x-p.x,pl.y-p.y),f=1-Math.max(0,d-R)/e.r;return f>0?e.dmg*(.4+.6*f):0}
 
 // simulação (para mira e para o computador)
-function simulate(shooter,wk,ang,maxDist){
-  const res={dmg:[0,0],pts:[],end:null,hit:null};
-  const angs=maxDist?[ang]:shotAngles(wk,ang);
-  for(const a of angs){
-    const p=makeProj(shooter,wk,a,true);
+function simulate(shooter,wk,ang,preview){
+  const res={dmg:[0,0],paths:[],ends:[]};
+  for(const a of shotAngles(wk,ang)){
+    const p=makeProj(shooter,wk,a,true),pts=[[p.x,p.y]],end={x:0,y:0,hit:null};
     const boom=p=>{for(const pl of G.players)if(pl.hp>0)res.dmg[pl.idx]+=dmgMod(pl,explDmg(p,pl),true)};
-    const cb={bounce(p){if(maxDist)res.pts.push([p.x,p.y])},bubble(p){if(maxDist)res.pts.push([p.x,p.y])},
-      end(p){p.dead=true;if(p.w.explode)boom(p);res.end=[p.x,p.y]},
-      hit(p,pl){p.dead=true;if(p.w.explode)boom(p);else res.dmg[pl.idx]+=dmgMod(pl,p.w.dmg,false);res.end=[p.x,p.y];res.hit=pl}};
-    if(maxDist)res.pts.push([p.x,p.y]);
-    let t=0,dist=0;const dt=1/60;
-    while(!p.dead&&t<10){const ox=p.x,oy=p.y;moveProj(p,dt,G.players,G.obs,cb);t+=dt;
-      if(!p.dead){p.life-=dt;if(p.w.fuse){p.fuse-=dt;if(p.fuse<=0)cb.end(p)}else if(p.life<=0)cb.end(p)}
-      if(maxDist){dist+=Math.hypot(p.x-ox,p.y-oy);if(dist>maxDist){res.pts.push([p.x,p.y]);break}}
-      if(p.w.friction&&!p.vx&&!p.vy&&!p.dead&&!maxDist){p.fuse=0;cb.end(p)}}
-    if(maxDist&&p.dead)res.pts.push([p.x,p.y]);
+    const cb={bounce(p){if(preview)pts.push([p.x,p.y])},bubble(p){if(preview)pts.push([p.x,p.y])},
+      end(p){p.dead=true;if(p.w.explode)boom(p)},
+      hit(p,pl){p.dead=true;if(p.w.explode)boom(p);else res.dmg[pl.idx]+=dmgMod(pl,p.w.dmg,false);end.hit=pl}};
+    let k=0;while(!p.dead&&k<SHOT_TIME*60+5){stepProj(p,cb);k++}
+    end.x=p.x;end.y=p.y;pts.push([p.x,p.y]);res.paths.push(pts);res.ends.push(end);
   }
   return res;
 }
+let PV={key:'',r:null};
+function previewFor(pl){const key=[pl.weapon,pl.aim.toFixed(4),pl.x.toFixed(1),pl.y.toFixed(1),G.obs.length,G.players.map(q=>q.x.toFixed(1)+q.y.toFixed(1)+q.active+q.hp).join()].join('|');
+  if(PV.key!==key)PV={key,r:simulate(pl,pl.weapon,pl.aim,true)};return PV.r}
 
 // ====================== AÇÕES ======================
 function fire(){
@@ -506,8 +520,16 @@ function fire(){
   S[WEAPONS[wk].snd]();
   const gx=pl.x+Math.cos(pl.aim)*40,gy=pl.y+6+Math.sin(pl.aim)*34;
   for(let i=0;i<10;i++)G.parts.push({x:gx,y:gy,vx:Math.cos(pl.aim+rnd(-.5,.5))*rnd(60,220),vy:Math.sin(pl.aim+rnd(-.5,.5))*rnd(60,220),life:.3,max:.3,col:i%2?'#ffd23f':'#fff',size:rnd(2,5)});
-  G.phase='flying';G.flyT=0;updateUI();
+  G.phase='flying';G.flyT=0;G.fast=false;G.defTried=false;G.acc=0;updateUI();
 }
+function defender(){const d=other();return d&&d.hp>0?d:null}
+function canDefend(){const d=defender();return G.screen==='game'&&d&&!d.cpu&&(G.phase==='aim'||G.phase==='flying')}
+function useDefense(k){const d=defender();if(!canDefend()||d.prot[k]<=0||d.active===k)return;
+  d.active=k;d.prot[k]--;k==='bolha'?S.boing():S.shield();setMsg(d.name+': '+PROTS[k].name+' ligado!');PV.key='';updateUI()}
+function cpuDefend(){const d=defender();if(!d||!d.cpu||d.active||G.defTried)return;
+  for(const p of G.proj){if(p.dead||p.owner===d)continue;if(Math.hypot(p.x-d.x,p.y-d.y)<230){G.defTried=true;
+    const ch=G.diff==='facil'?.2:G.diff==='medio'?.45:.7;if(Math.random()<ch){const k=d.prot.escudo>0?'escudo':d.prot.bolha>0?'bolha':null;
+      if(k){d.active=k;d.prot[k]--;k==='bolha'?S.boing():S.shield();setMsg('🤖 '+d.name+' ligou '+PROTS[k].name+'!');updateUI()}}return}}}
 function useProt(k){
   const pl=cur();if(G.phase!=='aim'||pl.usedProt||pl.prot[k]<=0)return false;
   if(k==='muro'){if(!placeWall(pl)){setMsg('Sem espaço para o muro aqui!');return false}S.wall()}
@@ -550,9 +572,9 @@ function explode(p){
   for(const o of G.obs)if(o.shape==='rect'&&rectCircDist(o,p.x,p.y)<e.r*.8)hurtObstacle(o,3);
 }
 const realCB={
-  bounce(p,o){S.bounce();hurtObstacle(o,1);for(let i=0;i<4;i++)G.parts.push({x:p.x,y:p.y,vx:rnd(-120,120),vy:rnd(-120,120),life:.25,max:.25,col:p.w.col||'#fff',size:2.5})},
+  bounce(p,o){S.bounce();for(let i=0;i<4;i++)G.parts.push({x:p.x,y:p.y,vx:rnd(-120,120),vy:rnd(-120,120),life:.25,max:.25,col:p.w.col||'#fff',size:2.5})},
   bubble(p,pl){S.boing();G.fts.push({x:pl.x,y:pl.y-55,text:'BOING!',col:'#c8f',t:.8})},
-  end(p,o){hurtObstacle(o,1);if(p.w.explode)explode(p);else{p.dead=true;for(let i=0;i<6;i++)G.parts.push({x:p.x,y:p.y,vx:rnd(-80,80),vy:rnd(-80,80),life:.3,max:.3,col:'#ccc',size:2})}},
+  end(p,o){if(p.w.explode)explode(p);else{p.dead=true;for(let i=0;i<6;i++)G.parts.push({x:p.x,y:p.y,vx:rnd(-80,80),vy:rnd(-80,80),life:.3,max:.3,col:'#ccc',size:2})}},
   hit(p,pl){if(p.w.explode)explode(p);else{p.dead=true;damage(pl,p.w.dmg,false)}},
 };
 
@@ -582,12 +604,12 @@ function updateWalk(dt){
 
 // ====================== COMPUTADOR ======================
 function angDiff(a,b){let d=b-a;while(d>Math.PI)d-=TAU;while(d<-Math.PI)d+=TAU;return d}
-function cpuEval(me,foe,wk,cands){
-  const N=wk==='pistola'||wk==='laser'?240:120;for(let i=0;i<N;i++){const a=i/N*TAU;const r=simulate(me,wk,a);const df=r.dmg[foe.idx],ds=r.dmg[me.idx];if(df>0)cands.push({wk,a,score:df-1.7*ds-CPU_COST[wk],df,ds})}
-}
+function cpuTasks(me){const t=[];for(const wk of WKEYS){if(me.ammo[wk]<=0)continue;const N=wk==='pistola'||wk==='laser'?120:wk==='escopeta'?30:60;for(let i=0;i<N;i++)t.push([wk,i/N*TAU])}return t}
+function cpuEval(me,foe,tasks,cands){const t0=performance.now();
+  while(tasks.length&&performance.now()-t0<9){const [wk,a]=tasks.pop();const r=simulate(me,wk,a);const df=r.dmg[foe.idx],ds=r.dmg[me.idx];if(df>0)cands.push({wk,a,score:df-1.7*ds-CPU_COST[wk],df,ds})}}
 function cpuRefine(me,foe,c){
   const ok=a=>{const r=simulate(me,c.wk,a);return r.dmg[foe.idx]>0&&r.dmg[me.idx]<r.dmg[foe.idx]};
-  let lo=c.a,hi=c.a;const st=.004;
+  let lo=c.a,hi=c.a;const st=.002;
   for(let k=1;k<=15;k++){if(ok(c.a-k*st))lo=c.a-k*st;else break}
   for(let k=1;k<=15;k++){if(ok(c.a+k*st))hi=c.a+k*st;else break}
   return{mid:(lo+hi)/2,half:(hi-lo)/2+st/2};
@@ -601,8 +623,8 @@ function updateCPU(dt){
       else if(me.prot.bolha>0&&Math.random()<.18)useProt('bolha');
       else if(me.prot.muro>0&&Math.random()<.12)useProt('muro');
     }
-    c.st='plan';c.queue=WKEYS.filter(k=>me.ammo[k]>0);c.cands=[];c.t=.25;return}
-  if(c.st==='plan'){if(c.queue.length){cpuEval(me,foe,c.queue.shift(),c.cands);return}
+    c.st='plan';c.queue=cpuTasks(me);c.cands=[];c.t=.25;return}
+  if(c.st==='plan'){if(c.queue.length){cpuEval(me,foe,c.queue,c.cands);return}
     const cs=c.cands.sort((a,b)=>b.score-a.score);
     if(!cs.length&&!c.walked&&me.walkLeft>40){
       let best=null;for(let i=0;i<16;i++){const a=rnd(0,TAU),d=rnd(70,me.walkLeft);const t={x:clamp(me.x+Math.cos(a)*d,60,W-60),y:clamp(me.y+Math.sin(a)*d,60,H-60)};const dd=Math.hypot(t.x-foe.x,t.y-foe.y);if(!best||dd<best.dd)best={...t,dd}}
@@ -617,7 +639,7 @@ function updateCPU(dt){
       pick.a=Math.random()<hitP?w.mid+gauss()*w.half*.25:w.mid+(Math.random()<.5?-1:1)*(w.half+rnd(.01,.09));
     }
     me.weapon=pick.wk;c.a0=me.aim;c.a1=pick.a;c.st='aim';c.t=0;updateUI();return}
-  if(c.st==='walk'){if(!G.walkTarget||me.walkLeft<=0){c.st='plan';c.queue=WKEYS.filter(k=>me.ammo[k]>0);c.cands=[]}return}
+  if(c.st==='walk'){if(!G.walkTarget||me.walkLeft<=0){c.st='plan';c.queue=cpuTasks(me);c.cands=[]}return}
   if(c.st==='aim'){c.t+=dt;const k=Math.min(1,c.t/.9),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;me.aim=c.a0+angDiff(c.a0,c.a1)*e;if(c.t>1.25){c.st='done';fire()}}
 }
 
@@ -625,16 +647,16 @@ function updateCPU(dt){
 let last=performance.now();
 function frame(now){
   const dt=Math.min(.033,(now-last)/1000);last=now;
-  if(G.screen==='game'){update(dt);render()}
+  if(G.screen==='game'){if(!G.paused)update(dt);render()}
   requestAnimationFrame(frame);
 }
 function update(dt){
   G.time+=dt;
   if(G.msgT>0){G.msgT-=dt;if(G.msgT<=0)document.getElementById('msg').textContent=''}
   if(G.phase==='aim'){updateWalk(dt);if(cur().cpu)updateCPU(dt)}
-  for(const p of G.proj){if(p.dead)continue;moveProj(p,dt,G.players,G.obs,realCB);if(p.dead)continue;p.life-=dt;p.spin+=dt*12;
-    if(p.w.fuse){p.fuse-=dt;if(p.fuse<=0)explode(p)}else if(p.life<=0)realCB.end(p,null);
-    p.trail.push([p.x,p.y]);if(p.trail.length>(p.w.laser?16:8))p.trail.shift()}
+  if(G.proj.length){G.acc+=dt*(G.fast?4:1);let n=0;while(G.acc>=STEP&&n<12){G.acc-=STEP;n++;
+      for(const p of G.proj){if(p.dead)continue;stepProj(p,realCB);p.spin+=STEP*12;p.trail.push([p.x,p.y]);if(p.trail.length>(p.w.laser?16:8))p.trail.shift()}}
+    if(n===12)G.acc=0;cpuDefend()}else G.acc=0;
   G.obs=G.obs.filter(o=>!o.dead);
   G.proj=G.proj.filter(p=>!p.dead);
   for(const e of G.exps)e.t+=dt;G.exps=G.exps.filter(e=>e.t<e.max);
@@ -643,7 +665,7 @@ function update(dt){
   for(const pl of G.players){if(pl.flash>0)pl.flash-=dt*1.5;if(pl.dead&&pl.dead<1)pl.dead=Math.min(1,pl.dead+dt*3)}
   if(G.banner){G.banner.t-=dt;if(G.banner.t<=0)G.banner=null}
   G.shake*=Math.pow(.002,dt);
-  if(G.phase==='flying'){G.flyT+=dt;if(G.flyT>12)G.proj.length=0;if(!G.proj.length&&!G.exps.length){G.phase='wait';G.waitT=.9}}
+  if(G.phase==='flying'){const tl=Math.max(0,Math.ceil(SHOT_TIME-G.flyT));if(tl!==G.lastTl){G.lastTl=tl;document.getElementById('turnTxt').textContent='⏱ Tiro voando: '+tl+'s'}G.flyT+=dt*(G.fast?4:1);if(G.flyT>SHOT_TIME+3)G.proj.length=0;if(!G.proj.length&&!G.exps.length){G.phase='wait';G.waitT=.9}}
   else if(G.phase==='wait'){G.waitT-=dt;if(G.waitT<=0){if(G.players.some(p=>p.hp<=0))gameOver();else nextTurn()}}
 }
 function render(){
@@ -652,15 +674,23 @@ function render(){
   c.drawImage(BG,0,0);
   for(const o of G.obs)drawObstacle(c,o);
   const pl=cur();
-  // mira
+  // mira: mostra o caminho inteiro do tiro até acertar alguém
   if(G.phase==='aim'&&pl&&pl.hp>0&&(!pl.cpu||(G.cpu&&G.cpu.st==='aim'))){
-    const r=simulate(pl,pl.weapon,pl.aim,560);
-    c.save();c.setLineDash([10,9]);c.lineDashOffset=-G.time*40;c.lineWidth=3;c.strokeStyle=pl.cpu?'rgba(255,120,120,.7)':'rgba(255,255,255,.85)';c.beginPath();
-    r.pts.forEach((q,i)=>i?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1]));c.stroke();c.setLineDash([]);
-    for(let i=1;i<r.pts.length-1;i++)C(c,r.pts[i][0],r.pts[i][1],4,'#fff');
-    const lp=r.pts[r.pts.length-1];if(lp){if(r.hit){C(c,lp[0],lp[1],12,null,'#ff3030',3);L(c,lp[0]-16,lp[1],lp[0]+16,lp[1],'#ff3030',2);L(c,lp[0],lp[1]-16,lp[0],lp[1]+16,'#ff3030',2)}
-      else if(r.end&&WEAPONS[pl.weapon].explode)C(c,lp[0],lp[1],WEAPONS[pl.weapon].explode.r*.5,'rgba(255,120,0,.12)','rgba(255,120,0,.6)',2)}
-    if(WEAPONS[pl.weapon].count>1){for(const a of [pl.aim-WEAPONS[pl.weapon].spread/2,pl.aim+WEAPONS[pl.weapon].spread/2])L(c,pl.x+Math.cos(a)*40,pl.y+Math.sin(a)*40,pl.x+Math.cos(a)*140,pl.y+Math.sin(a)*140,'rgba(255,200,80,.5)',2)}
+    const r=previewFor(pl),w=WEAPONS[pl.weapon],base=pl.cpu?'255,120,120':'255,255,255';
+    c.save();c.lineCap='round';
+    r.paths.forEach((pts,pi)=>{let d=0;const main=pi===Math.floor(r.paths.length/2);
+      for(let i=1;i<pts.length;i++){const a=pts[i-1],b=pts[i];const seg=Math.hypot(b[0]-a[0],b[1]-a[1]);
+        const al=Math.max(.18,1-d/9000)*(r.paths.length>1?.55:.9);d+=seg;
+        c.setLineDash([10,8]);c.lineDashOffset=-G.time*40;c.lineWidth=main?3:2;c.strokeStyle=`rgba(${base},${al})`;c.beginPath();c.moveTo(a[0],a[1]);c.lineTo(b[0],b[1]);c.stroke();
+        if(i<pts.length-1&&i<=12)C(c,b[0],b[1],main?3.5:2,`rgba(${base},${al})`)}});
+    c.setLineDash([]);
+    let foeHit=false,selfHit=false;
+    r.ends.forEach(e=>{if(w.explode)C(c,e.x,e.y,w.explode.r,'rgba(255,120,0,.10)','rgba(255,120,0,.55)',2);
+      if(e.hit&&e.hit!==pl){foeHit=true;C(c,e.x,e.y,12,null,'#ff3030',3);L(c,e.x-16,e.y,e.x+16,e.y,'#ff3030',2);L(c,e.x,e.y-16,e.x,e.y+16,'#ff3030',2)}
+      else if(e.hit===pl){selfHit=true;C(c,e.x,e.y,12,null,'#ffa500',3)}});
+    if(r.dmg[1-pl.idx]>0)foeHit=true;if(r.dmg[pl.idx]>0)selfHit=true;
+    if(!pl.cpu){const t=foeHit&&!selfHit?'🎯 VAI ACERTAR!':selfHit&&!foeHit?'⚠️ CUIDADO: volta em você!':foeHit?'🎯 acerta os dois!':'';
+      if(t){c.font='bold 26px Trebuchet MS,Arial';c.textAlign='center';c.lineWidth=5;c.strokeStyle='#000';c.strokeText(t,pl.x,pl.y-R-56);c.fillStyle=selfHit&&!foeHit?'#ffa500':'#7f7';c.fillText(t,pl.x,pl.y-R-56)}}
     c.restore();
   }
   // alvo de caminhada / passos
@@ -728,7 +758,9 @@ PKEYS.forEach(k=>{const p=PROTS[k],b=document.createElement('button');b.classNam
 function setCtl(m){G.ctl=m;document.getElementById('modeAim').classList.toggle('on',m==='aim');document.getElementById('modeWalk').classList.toggle('on',m==='walk')}
 document.getElementById('modeAim').onclick=()=>{A();setCtl('aim')};
 document.getElementById('modeWalk').onclick=()=>{A();setCtl('walk');if(cur()&&cur().walkLeft>0)setMsg('Toque no lugar para onde quer andar');};
-document.getElementById('fire').onclick=()=>{A();if(humanTurn())fire()};
+document.getElementById('fire').onclick=()=>{A();if(G.phase==='flying'){G.fast=!G.fast;updateUI()}else if(humanTurn())fire()};
+document.getElementById('d_escudo').onclick=()=>{A();useDefense('escudo')};
+document.getElementById('d_bolha').onclick=()=>{A();useDefense('bolha')};
 document.getElementById('muteBtn').onclick=e=>{muted=!muted;e.target.textContent=muted?'🔇':'🔊'};
 document.getElementById('menuBtn').onclick=()=>{showMenu()};
 function updateUI(){
@@ -742,7 +774,11 @@ function updateUI(){
   document.getElementById('scoreTxt').textContent=`Placar ${G.score[0]} x ${G.score[1]}`;
   for(const k of WKEYS){const b=document.getElementById('w_'+k),a=pl.ammo[k];b.disabled=!h||a<=0;b.classList.toggle('sel',pl.weapon===k);b.querySelector('.am').textContent=isFinite(a)?'x'+a:'∞'}
   for(const k of PKEYS){const b=document.getElementById('p_'+k),u=pl.prot[k];b.disabled=!h||pl.usedProt||u<=0;b.classList.toggle('sel',pl.active===k);b.querySelector('.am').textContent='x'+u}
-  for(const id of['modeAim','modeWalk','fire'])document.getElementById(id).disabled=!h;
+  for(const id of['modeAim','modeWalk'])document.getElementById(id).disabled=!h;
+  const fb=document.getElementById('fire');if(G.phase==='flying'){fb.disabled=false;fb.textContent=G.fast?'▶ Normal':'⏩ Acelerar'}else{fb.disabled=!h;fb.textContent='FOGO!'}
+  const dg=document.getElementById('dgrp'),dd=defender();dg.style.display=canDefend()?'':'none';
+  if(canDefend()){document.getElementById('dlbl').textContent='DEFESA: '+dd.name;
+    for(const k of['escudo','bolha']){const b=document.getElementById('d_'+k);b.disabled=dd.prot[k]<=0||!!dd.active;b.classList.toggle('sel',dd.active===k);b.querySelector('.am').textContent='x'+dd.prot[k]}}
   setCtl(G.ctl);
 }
 cv.addEventListener('pointerdown',e=>{A();G.ptrDown=true;try{cv.setPointerCapture(e.pointerId)}catch(_){}ptr(toWorld(e),true)});
@@ -783,6 +819,28 @@ document.getElementById('play').onclick=()=>{A();if(!G.sel[0]){G.slot=0;refreshM
 document.getElementById('againBtn').onclick=()=>{A();startGame()};
 document.getElementById('changeBtn').onclick=()=>{showMenu()};
 function showMenu(){G.screen='menu';G.phase='over';document.getElementById('over').classList.add('hidden');document.getElementById('menu').classList.remove('hidden');G.slot=0;refreshMenu()}
+function buildHelp(){
+  const sp=v=>v>=1.25?'muito rápido':v>=1.05?'rápido':v>=.9?'normal':'devagar';
+  let h=`<h1 style="font-size:28px">📖 Manual do Agente</h1>
+  <div class="how"><b>O jogo:</b> cada um atira na sua vez. Quem chegar a <b>zero de vida</b> perde.<br>
+  <b>Na sua vez:</b> 🚶 ande (até ${WALK} passos) → 🛡️ use uma proteção (se quiser) → 🔫 escolha a arma → 🎯 mire → FOGO!<br>
+  <b>A mira</b> mostra o caminho todo do tiro. <b>🎯 VAI ACERTAR!</b> = acerta o inimigo. <b>⚠️</b> = volta em você.<br>
+  <b>Os tiros quicam por 30 segundos</b> até encostar em alguém.</div>
+  <h2>🔫 Armas</h2><div class="hgrid">`;
+  for(const k of WKEYS){const w=WEAPONS[k];h+=`<div class="hc"><div class="hi">${w.icon}</div><div><b>${w.name}</b><p>${w.kid}</p><div class="hs">💔 Dano: ${w.dmgTxt} · 📦 Munição: ${w.ammoTxt} · ⚡ Velocidade: ${w.speed>=1200?'superrápida':w.speed>=800?'rápida':w.speed>=550?'média':'lenta'}</div></div></div>`}
+  h+=`</div><h2>🛡️ Proteções</h2><div class="hgrid">`;
+  for(const k of PKEYS){const p=PROTS[k];h+=`<div class="hc"><div class="hi">${p.icon}</div><div><b>${p.name}</b><p>${p.kid}</p><div class="hs">Pode usar: ${p.usesTxt}${p.def?' · ✅ também na vez do inimigo':' · só na sua vez'}</div></div></div>`}
+  h+=`</div><div class="how" style="margin-top:8px">Na sua vez, só dá para usar <b>uma</b> proteção. Escudo e Bolha duram até a sua próxima vez.</div><h2>🕵️ Bonecos</h2><div class="hgrid">`;
+  for(const ch of CHARS)h+=`<div class="hc"><canvas width="128" height="128" data-ch="${ch.id}"></canvas><div><b>${ch.name}</b><p>${ch.desc}</p><div class="hs">❤️ Vida: ${ch.hp} · 👟 ${sp(ch.spd)}</div></div></div>`;
+  h+=`</div><h2>🌳 A arena</h2><div class="hgrid">
+   <div class="hc"><div class="hi">🧱</div><div><b>Muros, pedras, árvores, carro</b><p>Os tiros quicam neles. Use para acertar quem está escondido!</p></div></div>
+   <div class="hc"><div class="hi">📦</div><div><b>Caixas de madeira</b><p>Os tiros quicam, mas uma explosão perto quebra a caixa.</p></div></div></div>
+  <button class="big" id="helpClose">✔ Entendi!</button>`;
+  const box=document.getElementById('helpBox');box.innerHTML=h;box.querySelectorAll('canvas[data-ch]').forEach(c=>portrait(c,c.dataset.ch));
+  document.getElementById('helpClose').onclick=()=>{document.getElementById('help').classList.add('hidden');G.paused=false};
+}
+function showHelp(){A();buildHelp();document.getElementById('help').classList.remove('hidden');document.getElementById('help').scrollTop=0;G.paused=true}
+document.getElementById('helpBtn').onclick=showHelp;document.getElementById('helpBtn2').onclick=showHelp;
 refreshMenu();resize();requestAnimationFrame(frame);
 </script>
 </body>
